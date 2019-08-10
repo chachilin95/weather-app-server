@@ -1,0 +1,9 @@
+h1 {
+    color: red;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+img {
+    border-radius: 50px;
+    width: 250px;
+}
