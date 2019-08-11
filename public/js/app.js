@@ -1,11 +1,19 @@
-console.log('client side js file is loaded');
+const weatherForm = document.querySelector('form');
+const search = document.querySelector('input');
 
-fetch('http://localhost:42069/weather?address=Dallas').then((res) => {
-    res.json().then((data) => {
-        if (data.error) {
-            return console.log(error);
-        }
+weatherForm.addEventListener('submit', (e) => {
+    e.preventDefault();
 
-        console.log(data);
+    const address = search.value;
+    fetch(`http://localhost:42069/weather?address=${address}`).then((res) => {
+        res.json().then((data) => {
+            if (data.error) {
+                return console.log(data.error);
+            }
+
+            console.log(data);
+        });
     });
-})
+
+    search.value = '';
+});
