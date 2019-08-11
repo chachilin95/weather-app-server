@@ -39,10 +39,26 @@ app.get('/help', (req, res) => {
     });
 });
 
+app.get('/help/*', (req, res) => {
+    res.render('notfound', {
+        title: '404 - Not Found',
+        msg: 'Help article not found.',
+        name: 'Alejandro Figueroa'
+    });
+});
+
 app.get('/weather', (req, res) => {
     res.send({
         forecast: 'hot as hell',
         location: 'Hell'
+    });
+});
+
+app.get('*', (req, res) => {
+    res.render('notfound', {
+        title: '404 - Not Found',
+        msg: 'Page not found.',
+        name: 'Alejandro Figueroa'
     });
 });
 
