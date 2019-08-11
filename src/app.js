@@ -41,7 +41,7 @@ app.get('/help', (req, res) => {
 
 app.get('/weather', (req, res) => {
     res.send({
-        forecast: 'hot as fuck',
+        forecast: 'hot as hell',
         location: 'Hell'
     });
 });
