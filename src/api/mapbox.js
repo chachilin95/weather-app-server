@@ -1,7 +1,9 @@
 const fs = require('fs');
+const path = require('path');
 const request = require('request');
 
-const apiKey = fs.readFileSync('./keys/mapbox.secret.key').toString();
+const apiKeyPath = path.join(__dirname, './keys/mapbox.secret.key');
+const apiKey = fs.readFileSync(apiKeyPath).toString();
 
 const generateURL = (place) => (
     `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(place)}.json?access_token=${apiKey}`

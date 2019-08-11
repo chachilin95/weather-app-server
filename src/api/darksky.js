@@ -1,7 +1,9 @@
 const fs = require('fs');
+const path = require('path');
 const request = require('request');
 
-const apiKey = fs.readFileSync('./keys/darksky.secret.key').toString();
+const apiKeyPath = path.join(__dirname, './keys/darksky.secret.key');
+const apiKey = fs.readFileSync(apiKeyPath).toString();
 
 const generateURL = ({ latitude, longitude }) => (
     `https://api.darksky.net/forecast/${apiKey}/${latitude},${longitude}`

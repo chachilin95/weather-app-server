@@ -2,6 +2,9 @@ const express = require('express');
 const hbs = require('hbs');
 const path = require('path');
 
+const geocode = require('./api/mapbox').geocode;
+const forecast  =require('./api/darksky').forecast;
+
 const app = express();
 
 // define paths for express config
@@ -48,7 +51,7 @@ app.get('/help/*', (req, res) => {
 });
 
 app.get('/products', (req, res) => {
-    
+
     if (!req.query.search) {
         return res.send({
             error: 'You must provide a search term'
@@ -68,26 +71,22 @@ app.get('/weather', (req, res) => {
         });
     }
 
-    geocode(location, (error, { latitude, longitude, location } = {}) => {
+    geocode(req.query.address, (error, { latitude, longitude, location } = {}) => {
         if (error) {
             return res.send({ error });
         }
-    
+
         forecast({ latitude, longitude }, (error, forecastData) => {
             if (error) {
                 return res.send({ error });
             }
-            
+
             return res.send({
+                address,
                 location,
                 forecastData
-            });      
-        });        
-    });
-
-    res.send({
-        forecast: 'hot as hell',
-        location: req.query.address
+            });
+        });
     });
 });
 
