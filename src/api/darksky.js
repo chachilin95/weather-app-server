@@ -1,9 +1,11 @@
 const fs = require('fs');
+const dotenv = require('dotenv');
 const path = require('path');
 const request = require('request');
 
-const apiKeyPath = path.join(__dirname, './keys/darksky.secret.key');
-const apiKey = fs.readFileSync(apiKeyPath).toString();
+// get API key
+dotenv.config();
+const apiKey = process.env.DARKSKY_API_KEY;
 
 const generateURL = ({ latitude, longitude }) => (
     `https://api.darksky.net/forecast/${apiKey}/${latitude},${longitude}`
