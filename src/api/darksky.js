@@ -23,12 +23,16 @@ const forecast = (location, callback) => {
         }
 
         const { currently, daily } = body;
-        const { temperature, precipProbability } = currently;
+        const { humidity, temperature, precipProbability } = currently;
         const todaySummary = daily.data[0].summary;
 
         callback(
             undefined,
-            `${todaySummary} It is currently ${temperature} degrees out. There is a ${precipProbability}% chance of rain`
+            (
+                `${todaySummary}
+                It is currently ${Math.round(temperature)}˚ out with a humidity of ${humidity * 100}%.
+                There is a ${precipProbability}% chance of rain`
+            )
         );
 
     });
