@@ -6,6 +6,7 @@ const geocode = require('./api/mapbox').geocode;
 const forecast  =require('./api/darksky').forecast;
 
 const app = express();
+const port = process.env.PORT || 3000;
 
 // define paths for express config
 const publicDir = path.join(__dirname, '../public');
@@ -99,6 +100,6 @@ app.get('*', (req, res) => {
     });
 });
 
-app.listen(42069, () => {
+app.listen(port, () => {
     console.log('Server is running on port 42069');
 });
