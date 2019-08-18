@@ -1,6 +1,4 @@
-const fs = require('fs');
 const dotenv = require('dotenv');
-const path = require('path');
 const request = require('request');
 
 // get API key
@@ -11,27 +9,26 @@ const generateURL = (place) => (
     `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(place)}.json?access_token=${apiKey}`
 );
 
-const geocode = (place, callback) => {
+const geocode = (place) => new Promise((resolve, reject) => {
     const url = generateURL(place);
 
     request({ url, json: true }, (error, { body }) => {
 
         if (error) {
-            return callback('Unable to connect to location services.', undefined);
+            return reject('Unable to connect to location services.');
         } else if (body.features.length === 0) {
-            return callback('Unable to find location, try another search term', undefined);
+            return reject('Unable to find location, try another search term');
         }
 
         const location = body.features[0].place_name
         const [longitude, latitude] = body.features[0].center;
-        callback(undefined, {
+        resolve({
             longitude,
             latitude,
             location
         });
-        
     });
-};
+});
 
 module.exports = {
     geocode

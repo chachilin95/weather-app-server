@@ -1,6 +1,4 @@
-const fs = require('fs');
 const dotenv = require('dotenv');
-const path = require('path');
 const request = require('request');
 
 // get API key
@@ -11,32 +9,28 @@ const generateURL = ({ latitude, longitude }) => (
     `https://api.darksky.net/forecast/${apiKey}/${latitude},${longitude}`
 );
 
-const forecast = (location, callback) => {
+const forecast = (location) => new Promise((resolve, reject) => {
     const url = generateURL(location);
 
     request({ url, json: true }, (error, { body }) => {
 
         if (error) {
-            return callback('Unable to connect to weather service.', undefined);
+            return reject('Unable to connect to weather service.', undefined);
         } else if (error = body.error) {
-            return callback(error, undefined);
+            return reject(error, undefined);
         }
 
         const { currently, daily } = body;
         const { humidity, temperature, precipProbability } = currently;
         const todaySummary = daily.data[0].summary;
 
-        callback(
-            undefined,
-            (
-                `${todaySummary}
-                It is currently ${Math.round(temperature)}˚ out with a humidity of ${humidity * 100}%.
-                There is a ${precipProbability}% chance of rain`
-            )
+        resolve(
+            `${todaySummary}
+            It is currently ${Math.round(temperature)}˚ out with a humidity of ${humidity * 100}%.
+            There is a ${precipProbability}% chance of rain`
         );
-
     });
-};
+});
 
 module.exports = {
     forecast

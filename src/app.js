@@ -3,7 +3,7 @@ const hbs = require('hbs');
 const path = require('path');
 
 const geocode = require('./api/mapbox').geocode;
-const forecast  =require('./api/darksky').forecast;
+const forecast = require('./api/darksky').forecast;
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -21,21 +21,21 @@ hbs.registerPartials(partialsPath);
 // setup static directory to serve
 app.use(express.static(publicDir));
 
-app.get('', (req, res) => {
+app.get('', (_req, res) => {
     res.render('index', {
         title: 'Weather App',
         name: 'Alejandro Figueroa'
     });
 });
 
-app.get('/about', (req, res) => {
+app.get('/about', (_req, res) => {
     res.render('about', {
         title: 'About Me',
         name: 'Alejandro Figueroa'
     });
 });
 
-app.get('/help', (req, res) => {
+app.get('/help', (_req, res) => {
     res.render('help', {
         title: 'Help Page',
         msg: 'How can I help you?',
@@ -43,7 +43,7 @@ app.get('/help', (req, res) => {
     });
 });
 
-app.get('/help/*', (req, res) => {
+app.get('/help/*', (_req, res) => {
     res.render('notfound', {
         title: '404 - Not Found',
         msg: 'Help article not found.',
@@ -51,20 +51,7 @@ app.get('/help/*', (req, res) => {
     });
 });
 
-app.get('/products', (req, res) => {
-
-    if (!req.query.search) {
-        return res.send({
-            error: 'You must provide a search term'
-        });
-    }
-
-    res.send({
-        products: []
-    });
-});
-
-app.get('/weather', (req, res) => {
+app.get('/weather', async (req, res) => {
 
     if (!req.query.address) {
         return res.send({
@@ -72,27 +59,22 @@ app.get('/weather', (req, res) => {
         });
     }
 
-    const address = req.query.address;
-    geocode(address, (error, { latitude, longitude, location } = {}) => {
-        if (error) {
-            return res.send({ error });
-        }
+    try {
+        const address = req.query.address;
+        const { latitude, longitude, location } = await geocode(address);
+        const forecastData = await forecast({ latitude, longitude });
 
-        forecast({ latitude, longitude }, (error, forecastData) => {
-            if (error) {
-                return res.send({ error });
-            }
-
-            return res.send({
-                address,
-                location,
-                forecastData
-            });
+        res.send({
+            address,
+            location,
+            forecastData
         });
-    });
+    } catch (error) {
+        res.send(error);
+    }
 });
 
-app.get('*', (req, res) => {
+app.get('*', (_req, res) => {
     res.render('notfound', {
         title: '404 - Not Found',
         msg: 'Page not found.',
@@ -101,5 +83,5 @@ app.get('*', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log('Server is running on port 42069');
+    console.log('Server is running on port ' + port);
 });
